@@ -276,8 +276,10 @@ class NarrativeEngineClient {
                     this.updateAxes(result.axes);
                 }
                 
-                // 更新事件卡
-                if (result.event) {
+                // 更新事件卡 - 传递原始 predictor 输出
+                if (result.predictor_raw_output) {
+                    this.updateEventCard({ _raw_output: result.predictor_raw_output });
+                } else if (result.event) {
                     this.updateEventCard(result.event);
                 }
                 
@@ -466,26 +468,39 @@ class NarrativeEngineClient {
             return;
         }
         
-        // 使用 DOM API 防止 XSS
+        // 直接显示原始事件数据（JSON格式）
         this.eventCard.innerHTML = '';
         const content = document.createElement('div');
         content.className = 'event-content';
 
-        const title = document.createElement('div');
-        title.className = 'event-title';
-        title.textContent = event.title || '未知事件';
+        // 如果有原始 raw_output，直接显示
+        if (event._raw_output) {
+            const pre = document.createElement('pre');
+            pre.style.whiteSpace = 'pre-wrap';
+            pre.style.wordBreak = 'break-all';
+            pre.style.fontSize = '12px';
+            pre.style.margin = '0';
+            pre.textContent = event._raw_output;
+            content.appendChild(pre);
+        } else {
+            // 兼容旧格式：解析显示
+            const title = document.createElement('div');
+            title.className = 'event-title';
+            title.textContent = event.title || event.event_id || '未知事件';
 
-        const archetype = document.createElement('div');
-        archetype.className = 'event-archetype';
-        archetype.textContent = `类型: ${event.archetype || '未知'}`;
+            const archetype = document.createElement('div');
+            archetype.className = 'event-archetype';
+            archetype.textContent = `类型: ${event.archetype || event.archetype_ref || '未知'}`;
 
-        const hook = document.createElement('div');
-        hook.className = 'event-hook';
-        hook.textContent = event.plot_hook || event.trigger || '';
+            const hook = document.createElement('div');
+            hook.className = 'event-hook';
+            hook.textContent = event.plot_hook || event.trigger || '';
 
-        content.appendChild(title);
-        content.appendChild(archetype);
-        content.appendChild(hook);
+            content.appendChild(title);
+            content.appendChild(archetype);
+            content.appendChild(hook);
+        }
+
         this.eventCard.appendChild(content);
     }
     
