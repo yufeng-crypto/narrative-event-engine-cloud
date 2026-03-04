@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>叙事引擎 - 对话界面</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 叙事引擎</h1>
+            <div class="status-bar">
+                <span id="engine-status" class="status">
+                    {% if engine_status %}
+                        <span class="status-dot online"></span> 云端引擎: {{ engine_status.status | escape }}
+                    {% else %}
+                        <span class="status-dot offline"></span> 云端引擎: 未连接
+                    {% endif %}
+                </span>
+            </div>
+        </header>
+
+        <main>
+            <!-- 顶部工具栏 -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <label for="role-select">角色:</label>
+                    <select id="role-select" class="role-select">
+                        <option value="">-- 选择角色 --</option>
+                    </select>
+                </div>
+                <div class="toolbar-right">
+                    <button id="send-btn" class="btn btn-primary" disabled>发送</button>
+                    <button id="save-btn" class="btn btn-secondary" disabled>保存</button>
+                    <button id="new-chat-btn" class="btn btn-secondary">新对话</button>
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 左侧：对话区域 -->
+                <div class="chat-section">
+                    <div id="chat-history" class="chat-history">
+                        <!-- 对话记录将显示在这里 -->
+                        <div class="empty-state">
+                            <p>请选择一个角色开始对话</p>
+                        </div>
+                    </div>
+                    <!-- 加载指示器 -->
+                    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <span>正在思考...</span>
+                    </div>
+                    <div class="input-area">
+                        <textarea id="user-input" placeholder="输入消息... (Enter发送, Shift+Enter换行)" rows="3" disabled></textarea>
+                    </div>
+                </div>
+
+                <!-- 右侧：状态区域 -->
+                <div class="status-section">
+                    <!-- 六轴状态 -->
+                    <div class="status-panel">
+                        <h3>六轴状态</h3>
+                        <div id="axes-display" class="axes-display">
+                            <div class="axis-item">
+                                <span class="axis-name">Intimacy</span>
+                                <div class="axis-bar">
+                                    <div class="axis-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="axis-value" data-axis="Intimacy">0</span>
+                            </div>
+                            <div class="axis-item">
+                                <span class="axis-name">Risk</span>
+                                <div class="axis-bar">
+                                    <div class="axis-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="axis-value" data-axis="Risk">0</span>
+                            </div>
+                            <div class="axis-item">
+                                <span class="axis-name">Info</span>
+                                <div class="axis-bar">
+                                    <div class="axis-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="axis-value" data-axis="Info">0</span>
+                            </div>
+                            <div class="axis-item">
+                                <span class="axis-name">Action</span>
+                                <div class="axis-bar">
+                                    <div class="axis-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="axis-value" data-axis="Action">0</span>
+                            </div>
+                            <div class="axis-item">
+                                <span class="axis-name">Rel</span>
+                                <div class="axis-bar">
+                                    <div class="axis-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="axis-value" data-axis="Rel">0</span>
+                            </div>
+                            <div class="axis-item">
+                                <span class="axis-name">Growth</span>
+                                <div class="axis-bar">
+                                    <div class="axis-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="axis-value" data-axis="Growth">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 事件卡 -->
+                    <div class="status-panel">
+                        <h3>事件卡</h3>
+                        <div id="event-card" class="event-card">
+                            <div class="event-empty">
+                                <p>暂无事件</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 调试标签页 -->
+        <section class="debug-section">
+            <div class="debug-tabs">
+                <button class="debug-tab active" data-tab="perception">Perception</button>
+                <button class="debug-tab" data-tab="director">Director</button>
+                <button class="debug-tab" data-tab="predictor">Predictor</button>
+                <button class="debug-tab" data-tab="performer">Performer</button>
+            </div>
+            
+            <div class="debug-content">
+                <div class="debug-panel">
+                    <div class="debug-panel-header">
+                        <span class="debug-panel-title">【输入】</span>
+                    </div>
+                    <div class="debug-panel-body">
+                        <pre id="debug-input" class="debug-text">等待对话开始...</pre>
+                    </div>
+                </div>
+                <div class="debug-panel">
+                    <div class="debug-panel-header">
+                        <span class="debug-panel-title">【输出】</span>
+                    </div>
+                    <div class="debug-panel-body">
+                        <pre id="debug-output" class="debug-text">等待对话开始...</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

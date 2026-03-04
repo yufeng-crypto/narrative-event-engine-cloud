@@ -7,14 +7,19 @@ import os
 import json
 from datetime import datetime
 from pathlib import Path
+import secrets
 
 app = Flask(__name__)
 
 # 全局引擎实例
 engine = None
 
-# API认证Key（从环境变量读取）
-API_KEY = os.environ.get('API_KEY', 'default_key_change_me')
+# API认证Key（从环境变量读取）- 生产环境必须设置
+API_KEY = os.environ.get('API_KEY')
+if not API_KEY:
+    print("WARNING: API_KEY not set. Set environment variable API_KEY for production.")
+    # 开发环境使用随机密钥
+    API_KEY = f"dev_key_{secrets.token_hex(8)}"
 
 # 日志目录
 LOG_DIR = Path(__file__).parent / "logs"
