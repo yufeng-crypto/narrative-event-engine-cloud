@@ -174,7 +174,7 @@ def clear_session_data(session_id):
         del _sessions[session_id]
 
 # ============ 云端引擎配置 ============
-CLOUD_ENGINE_URL = os.environ.get('CLOUD_ENGINE_URL', 'http://8.134.212.37:80')
+CLOUD_ENGINE_URL = os.environ.get('CLOUD_ENGINE_URL', 'http://8.134.212.37:5000')
 
 # API端点
 API_START = f"{CLOUD_ENGINE_URL}/api/start"
