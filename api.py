@@ -71,7 +71,7 @@ def health():
 
 
 @app.route('/api/start', methods=['POST'])
-@require_auth
+# @require_auth  # 临时注释掉认证
 def start():
     """初始化引擎"""
     global engine
@@ -95,7 +95,7 @@ def start():
 
 
 @app.route('/api/chat', methods=['POST'])
-@require_auth
+# @require_auth  # 临时注释掉认证
 def chat_api():
     """对话接口"""
     if engine is None:
@@ -148,7 +148,7 @@ def chat_api():
 
 
 @app.route('/api/state', methods=['GET'])
-@require_auth
+# @require_auth  # 临时注释掉认证
 def state_api():
     """获取引擎状态"""
     if engine is None:
@@ -160,7 +160,7 @@ def state_api():
 
 
 @app.route('/api/reset', methods=['POST'])
-@require_auth
+# @require_auth  # 临时注释掉认证
 def reset_api():
     """重置引擎"""
     global engine
